@@ -1,0 +1,4 @@
+schedule==1.1.0
+rpi_ws281x==4.3.1
+adafruit-circuitpython-neopixel==6.2.3
+adafruit-blinka==6.20.1

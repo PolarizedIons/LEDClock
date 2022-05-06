@@ -1,7 +1,7 @@
 import signal
 from datetime import datetime
-import time
 from time import sleep
+from math import sin, pi
 
 import board
 import neopixel
@@ -41,6 +41,18 @@ number_matrix = {
 }
 
 
+def calc_brightness(now):
+    # graph.tk: max\left(0,\:255\cdot \left(-2sin\left(\frac{1}{24}\cdot pi\cdot \left(x-26\right)\right)-1\right)\right)
+    x = now.hour + now.minute / 60
+    y = max(0, 255 * (-2 * sin(1/24 * pi * (x - 26)) - 1))
+    return y
+
+
+def update_brightness(now):
+    new_brightness = calc_brightness(now)
+    leds.brightness = new_brightness / 255
+
+
 def tick():
     global last_update
     new_time = datetime.now()
@@ -52,6 +64,7 @@ def tick():
     if last_update is None or new_time.hour != last_update.hour:
         update_hours(new_time)
 
+    update_brightness(new_time)
     last_update = new_time
 
 
@@ -110,7 +123,7 @@ schedule.every(1).second.do(tick)
 while running:
     try:
         schedule.run_pending()
-        time.sleep(0.5)
+        sleep(0.5)
     except KeyboardInterrupt:
         stop()
 
